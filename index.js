@@ -1,18 +1,33 @@
 const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
+const { auth } = require('express-openid-connect');
 const { MongoClient, ObjectId } = require("mongodb");
 const port = 3000;
 const app = express();
+require('dotenv').config();
+
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.SECRET,
+  baseURL: process.env.BASEURL,
+  clientID: process.env.CLIENT_ID,
+  issuerBaseURL: process.env.ISSUER
+};
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(auth(config));
 const mongoUrl =
   `mongodb+srv://${process.env.MONGO_UN}:${process.env.MONGO_PW}@cluster0.hfvvz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(mongoUrl);
 const dbName = "SDE-ToDoList";
 
+app.get('/', (req, res) => {
+  console.log(req.oidc.isAuthenticated());
+});
 
 client.connect().then(() => {
     const db = client.db(dbName);
