@@ -19,7 +19,7 @@ client.connect().then(() => {
   
     const todoList = db.collection("todolist");
   
-    app.get("/todo",requiresAuth(), async (req, res) => {
+    app.get("/todo", async (req, res) => {
         const complete = req.query.complete;
 
       const data = await todoList.find({complete: complete}).toArray();
