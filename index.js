@@ -39,7 +39,7 @@ client.connect().then(() => {
       res.send(JSON.stringify(req.oidc.user));
     });
   
-    app.get("/todo", async (req, res) => {
+    app.get("/todo",requiresAuth(), async (req, res) => {
         const complete = req.query.complete;
 
       const data = await todoList.find({complete: complete}).toArray();
