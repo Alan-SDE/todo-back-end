@@ -24,22 +24,23 @@ const mongoUrl =
 const client = new MongoClient(mongoUrl);
 const dbName = "SDE-ToDoList";
 
-app.get('/', (req, res) => {
-  if (req.oidc.isAuthenticated()) {
-    res.redirect("https://alanpottinger.com/todo-front-end/");
-  }
-});
-
-app.get('/profile', requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user));
-});
 
 client.connect().then(() => {
     const db = client.db(dbName);
   
     const todoList = db.collection("todolist");
 
-    app.get("getProfile", (req,res) => {
+    app.get('/', (req, res) => {
+      if (req.oidc.isAuthenticated()) {
+        res.redirect("https://alanpottinger.com/todo-front-end/");
+      }
+    });
+    
+    app.get('/profile', requiresAuth(), (req, res) => {
+      res.send(JSON.stringify(req.oidc.user));
+    });
+
+    app.get("/getProfile", (req,res) => {
       res.redirect(303,"/profile");
     })
   
