@@ -26,7 +26,7 @@ const dbName = "SDE-ToDoList";
 
 app.get('/', (req, res) => {
   if (req.oidc.isAuthenticated()) {
-    res.redirect("https://https://alanpottinger.com/todo-front-end/")
+    res.redirect("https://alanpottinger.com/todo-front-end/")
   }
 });
 
