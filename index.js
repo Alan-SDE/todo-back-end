@@ -1,21 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
-const { auth, requiresAuth } = require("express-openid-connect");
 const port = 3000;
 const app = express();
 require("dotenv").config();
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  baseURL: process.env.BASEURL,
-  clientID: process.env.CLIENT_ID,
-  issuerBaseURL: process.env.ISSUER,
-  secret: process.env.SECRET,
-};
 
 app.use(cors());
-app.use(auth(config));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,14 +17,6 @@ client.connect().then(() => {
   const db = client.db(dbName);
 
   const todoList = db.collection("todolist");
-
-  app.get("/", (req, res) => {
-    res.redirect(`https://alanpottinger.com/todo-front-end/`);
-  });
-
-  app.get("/profile", requiresAuth(), (req, res) => {
-    res.send(JSON.stringify(req.oidc.user));
-  });
 
   app.get("/todo", async (req, res) => {
     const complete = req.query.complete;
@@ -92,9 +74,7 @@ client.connect().then(() => {
     const { _id, userId } = req.body;
 
     itemToDelete = await todoList.find({_id: ObjectId(_id)}).toArray();
-    console.log(itemToDelete);
-
-
+   
     if(itemToDelete[0].complete === "false"){
       todoList.deleteOne({ _id: ObjectId(_id) }).then(() => {
             res.redirect(303, `/todo?complete=false&userId=${userId}`);
