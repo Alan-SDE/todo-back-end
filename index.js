@@ -32,12 +32,12 @@ client.connect().then(() => {
 
     app.get('/', (req, res) => {
       console.log(req.oidc);
-      res.redirect("https://alanpottinger.com/todo-front-end/");
+      //res.redirect("https://alanpottinger.com/todo-front-end/");
       
     });
     
     app.get('/profile', (req, res) => {
-      res.send(JSON.stringify(req.oidc.user.sub));
+      res.send(JSON.stringify(req.oidc.user));
     });
   
     app.get("/todo", async (req, res) => {
