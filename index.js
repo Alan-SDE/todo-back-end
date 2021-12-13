@@ -39,10 +39,6 @@ client.connect().then(() => {
     app.get('/profile', requiresAuth(), (req, res) => {
       res.send(JSON.stringify(req.oidc.user));
     });
-
-    app.get("/getProfile", (req,res) => {
-      res.redirect(303,"/profile");
-    })
   
     app.get("/todo", async (req, res) => {
         const complete = req.query.complete;
