@@ -24,7 +24,7 @@ const mongoUrl =
 const client = new MongoClient(mongoUrl);
 const dbName = "SDE-ToDoList";
 
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
   console.log(req.oidc.isAuthenticated());
 });
 
