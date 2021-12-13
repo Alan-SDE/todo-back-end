@@ -31,13 +31,13 @@ client.connect().then(() => {
     const todoList = db.collection("todolist");
 
     app.get('/', (req, res) => {
-      if (req.oidc.isAuthenticated()) {
-        res.redirect("https://alanpottinger.com/todo-front-end/");
-      }
+      console.log(req.oidc);
+      res.redirect("https://alanpottinger.com/todo-front-end/");
+      
     });
     
     app.get('/profile', (req, res) => {
-      res.send(JSON.stringify(req.oidc.user));
+      res.send(JSON.stringify(req.oidc.user.sub));
     });
   
     app.get("/todo", async (req, res) => {
