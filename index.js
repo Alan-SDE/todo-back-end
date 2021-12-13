@@ -25,7 +25,9 @@ const client = new MongoClient(mongoUrl);
 const dbName = "SDE-ToDoList";
 
 app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+  if (req.oidc.isAuthenticated()) {
+    res.redirect("https://alanpottinger.com/")
+  }
 });
 
 client.connect().then(() => {
