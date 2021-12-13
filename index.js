@@ -26,7 +26,7 @@ const dbName = "SDE-ToDoList";
 
 app.get('/', (req, res) => {
   if (req.oidc.isAuthenticated()) {
-    res.redirect("https://alanpottinger.com/todo-front-end/")
+    res.redirect("https://alanpottinger.com/todo-front-end/");
   }
 });
 
@@ -38,6 +38,10 @@ client.connect().then(() => {
     const db = client.db(dbName);
   
     const todoList = db.collection("todolist");
+
+    app.get("getProfile", (req,res) => {
+      res.redirect(303,"/profile");
+    })
   
     app.get("/todo", async (req, res) => {
         const complete = req.query.complete;
