@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
-const { auth } = require('express-openid-connect');
+const { auth, requiresAuth } = require('express-openid-connect');
 const port = 3000;
 const app = express();
 require('dotenv').config();
@@ -28,6 +28,10 @@ app.get('/', (req, res) => {
   if (req.oidc.isAuthenticated()) {
     res.redirect("https://alanpottinger.com/todo-front-end/")
   }
+});
+
+app.get('/profile', requiresAuth(), (req, res) => {
+  res.send(JSON.stringify(req.oidc.user));
 });
 
 client.connect().then(() => {
