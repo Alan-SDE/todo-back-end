@@ -1,12 +1,21 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
+const { auth } = require('express-openid-connect');
 const port = 3000;
 const app = express();
 require('dotenv').config();
-
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  baseURL: process.env.BASEURL,
+  clientID: process.env.CLIENT_ID,
+  issuerBaseURL: process.env.ISSUER,
+  secret: process.env.SECRET
+};
 
 app.use(cors());
+app.use(auth(config));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -14,6 +23,10 @@ const mongoUrl =
   `mongodb+srv://${process.env.MONGO_UN}:${process.env.MONGO_PW}@cluster0.hfvvz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(mongoUrl);
 const dbName = "SDE-ToDoList";
+
+app.get('/', (req, res) => {
+  console.log(req.oidc.isAuthenticated());
+});
 
 client.connect().then(() => {
     const db = client.db(dbName);
