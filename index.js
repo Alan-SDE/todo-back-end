@@ -36,7 +36,7 @@ client.connect().then(() => {
       }
     });
     
-    app.get('/profile', requiresAuth(), (req, res) => {
+    app.get('/profile', (req, res) => {
       res.send(JSON.stringify(req.oidc.user));
     });
   
