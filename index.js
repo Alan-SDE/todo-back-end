@@ -38,21 +38,22 @@ client.connect().then(() => {
 
   app.get("/todo", async (req, res) => {
     const complete = req.query.complete;
+    const userId = req.query.userId
 
-    const data = await todoList.find({ complete: complete }).toArray();
+    const data = await todoList.find({ complete: complete, userId: userId }).toArray();
     res.send(data);
   });
 
   app.post("/todo", (req, res) => {
-    const { item, complete, dueDate } = req.body;
+    const { item, complete, dueDate, userId } = req.body;
 
-    if (!item || item.length === 0 || !complete || complete.length === 0) {
+    if (!item || item.length === 0 || !complete || complete.length === 0 || !userId || userId.length === 0) {
       return res
         .status(400)
         .json({ message: "Need both item and complete status" });
     }
 
-    const todo = { item, complete };
+    const todo = { item, complete, userId };
 
     if (dueDate && dueDate.length !== 0) {
       todo.dueDate = dueDate;
@@ -61,12 +62,12 @@ client.connect().then(() => {
     }
 
     todoList.insertOne(todo).then(() => {
-      res.redirect(303, "/todo?complete=false");
+      res.redirect(303, `/todo?complete=false&userId=${userId}`);
     });
   });
 
   app.put("/todo", async (req, res) => {
-    const { _id, itemName, dueDate, complete } = req.body;
+    const { _id, itemName, dueDate, complete, userId } = req.body;
 
     const newTodo = {};
 
@@ -83,16 +84,28 @@ client.connect().then(() => {
     }
 
     todoList.updateOne({ _id: ObjectId(_id) }, { $set: newTodo }).then(() => {
-      res.redirect(303, "/todo?complete=false");
+      res.redirect(303, `/todo?complete=false&userId=${userId}`);
     });
   });
 
-  app.delete("/todo/:id", (req, res) => {
-    const Id = req.params.id;
+  app.delete("/todo", async (req, res) => {
+    const { _id, userId } = req.body;
 
-    todoList.deleteOne({ _id: ObjectId(Id) }).then(() => {
-      res.redirect(303, "/todo?complete=false");
-    });
+    itemToDelete = await todoList.find({_id: ObjectId(_id)}).toArray();
+    console.log(itemToDelete);
+
+
+    if(itemToDelete[0].complete === "false"){
+      todoList.deleteOne({ _id: ObjectId(_id) }).then(() => {
+            res.redirect(303, `/todo?complete=false&userId=${userId}`);
+          });
+    } else {
+      todoList.deleteOne({ _id: ObjectId(_id) }).then(() => {
+        res.redirect(303, `/todo?complete=true&userId=${userId}`);
+      });
+    }
+
+    
   });
 
   app.listen(process.env.PORT || port, () => {
