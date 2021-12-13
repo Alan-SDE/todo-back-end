@@ -31,8 +31,7 @@ client.connect().then(() => {
     const todoList = db.collection("todolist");
 
     app.get('/', (req, res) => {
-      console.log(req.oidc);
-      res.redirect("https://alanpottinger.com/todo-front-end/");
+      res.redirect(`https://alanpottinger.com/todo-front-end/?user=${req.oidc.user}`);
       
     });
     
